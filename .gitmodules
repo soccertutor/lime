@@ -21,7 +21,7 @@
 	url = https://github.com/openfl/libneko
 [submodule "project/lib/png"]
 	path = project/lib/png
-	url = https://github.com/openfl/libpng
+	url = https://github.com/soccertutor/libpng
 [submodule "project/lib/jpeg"]
 	path = project/lib/jpeg
 	url = https://github.com/openfl/libjpeg
