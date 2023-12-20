@@ -36,7 +36,7 @@
 	url = https://github.com/openfl/libcairo
 [submodule "project/lib/pixman"]
 	path = project/lib/pixman
-	url = https://github.com/openfl/libpixman
+	url = https://github.com/soccertutor/libpixman
 [submodule "project/lib/lzma"]
 	path = project/lib/lzma
 	url = https://github.com/openfl/liblzma
@@ -61,4 +61,3 @@
 [submodule "project/lib/hashlink"]
 	path = project/lib/hashlink
 	url = https://github.com/HaxeFoundation/hashlink
-  
