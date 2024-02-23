@@ -459,6 +459,9 @@
 				<vflag name="-framework" value="SystemConfiguration" />
 
 				<lib name="/opt/local/lib/libgc.a" if="LIME_NEKO" />
+
+				<lib name="-Wl,-rpath,/opt/homebrew/lib" if="HXCPP_ARM64" />
+
 				<lib name="-lm" if="LIME_NEKO" />
 
 				<lib name="-L../templates/bin/hl/${BINDIR}" if="LIME_HASHLINK" />
