@@ -447,6 +447,7 @@
 					/usr/local/lib, but we need it for neko
 				-->
 				<vflag name="-rpath" value="/usr/local/lib" />
+				<vflag name="-rpath" value="/opt/homebrew/lib" if="HXCPP_ARM64"/>
 
 				<vflag name="-l" value="iconv" />
 				<vflag name="-framework" value="IOKit" />
@@ -464,9 +465,6 @@
 				<vflag name="-framework" value="SystemConfiguration" />
 
 				<lib name="/opt/local/lib/libgc.a" if="LIME_NEKO" />
-
-				<lib name="-Wl,-rpath,/opt/homebrew/lib" if="HXCPP_ARM64" />
-
 				<lib name="-lm" if="LIME_NEKO" />
 
 				<lib name="-L../templates/bin/hl/${BINDIR}" if="LIME_HASHLINK" />
