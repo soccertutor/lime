@@ -8,6 +8,10 @@ on:
         description: 'Version number'
         required: true
         type: string
+      android_x86_64:
+        description: 'Include android x86_64 architecture'
+        required: false
+        type: boolean
 
 env:
   HAXE_VERSION: 4.2.5
@@ -338,7 +342,9 @@ jobs:
 
       - name: Rebuild Lime (Android)
         run: |
-          lime rebuild android -release -nocolor -verbose -nocffi -eval -x86_64 -DHXCPP_DEBUG_LINK
+          lime rebuild android -release -nocolor -verbose -nocffi -eval \
+            ${{ inputs.android_x86_64 && '-x86_64' || '' }} \
+            -DHXCPP_DEBUG_LINK
 
       - uses: actions/upload-artifact@v4
         with:
@@ -911,11 +917,14 @@ jobs:
         name: Compress package
 
       - run: |
+          notes='Custom release'
+          ${{ inputs.android_x86_64 }} && notes+=$'\n- with android x86_64 binaries'
+
           gh release create ${{ inputs.version }} \
             --title 'Custom Lime ${{ inputs.version }}' \
             --target ${{ github.ref_name }} \
             --generate-notes \
-            --notes 'Custom release' \
+            --notes "$notes" \
             lime-haxelib.zip
         name: Create release
         env:
