@@ -12,6 +12,10 @@ on:
         description: 'Include android x86_64 architecture'
         required: false
         type: boolean
+      android_debug_sybmols:
+        description: 'Include debug symbols for android binaries'
+        required: false
+        type: boolean
 
 env:
   HAXE_VERSION: 4.2.5
@@ -344,7 +348,7 @@ jobs:
         run: |
           lime rebuild android -release -nocolor -verbose -nocffi -eval \
             ${{ inputs.android_x86_64 && '-x86_64' || '' }} \
-            -DHXCPP_DEBUG_LINK
+            ${{ inputs.android_debug_sybmols && '-DHXCPP_DEBUG_LINK' || '' }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -919,6 +923,7 @@ jobs:
       - run: |
           notes='Custom release'
           ${{ inputs.android_x86_64 }} && notes+=$'\n- with android x86_64 binaries'
+          ${{ inputs.android_debug_sybmols }} && notes+=$'\n- with android debug symbols'
 
           gh release create ${{ inputs.version }} \
             --title 'Custom Lime ${{ inputs.version }}' \
