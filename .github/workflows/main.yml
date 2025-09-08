@@ -29,12 +29,8 @@ jobs:
 
       - name: Install Haxe dependencies
         run: |
-          haxelib git hxcpp https://github.com/soccertutor/hxcpp cdae7a1e7df3e0d7c95e20f250e89bab76e3aed1
-          cd $(haxelib libpath hxcpp)tools/hxcpp
-          haxe compile.hxml
-          cd $(haxelib libpath hxcpp)tools/build
-          haxe compile.hxml
-
+          curl --output ../hxcpp-4.3.45.zip --location https://github.com/HaxeFoundation/hxcpp/releases/download/v4.3.45/hxcpp-4.3.45.zip
+          haxelib install ../hxcpp-4.3.45.zip --quiet
           haxelib install format --quiet
           haxelib install hxp --quiet
 
