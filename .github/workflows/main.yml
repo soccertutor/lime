@@ -1,5 +1,13 @@
 name: CI
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number'
+        required: true
+        type: string
 
 env:
   HAXE_VERSION: 4.2.5
@@ -882,3 +890,33 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
+
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: [package-haxelib]
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: lime-haxelib
+          path: lime-haxelib
+
+      - run: |
+          cd lime-haxelib
+          zip -r ../lime-haxelib.zip .
+        name: Compress package
+
+      - run: |
+          gh release create ${{ inputs.version }} \
+            --title 'Custom Lime ${{ inputs.version }}' \
+            --target ${{ github.ref_name }} \
+            --generate-notes \
+            --notes 'Custom release' \
+            lime-haxelib.zip
+        name: Create release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
