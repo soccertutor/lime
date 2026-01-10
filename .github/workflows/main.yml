@@ -901,11 +901,22 @@ jobs:
           github-token: ${{ secrets.github_token }}
           discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
 
+  check-version:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    steps:
+      - name: Validate version
+        run: |
+          if ! git check-ref-format "refs/tags/${{ inputs.version }}"; then
+            echo "Error: '${{ inputs.version }}' is not a valid git tag name."
+            exit 1
+          fi
+
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    needs: [package-haxelib]
+    needs: [package-haxelib, check-version]
     if: ${{ github.event_name == 'workflow_dispatch' }}
     steps:
       - uses: actions/checkout@v4
