@@ -19,6 +19,7 @@ on:
 
 env:
   HAXE_VERSION: 4.2.5
+  HXCPP_COMPILE_CACHE: ${{ github.workspace }}/.hxcpp_cache
 
 jobs:
 
@@ -49,10 +50,6 @@ jobs:
           haxe -C $(haxelib libpath hxcpp)tools/hxcpp compile.hxml
           haxelib install format --quiet
           haxelib install hxp --quiet
-
-      - name: Enable HXCPP compile cache
-        run: |
-          echo "HXCPP_COMPILE_CACHE=~/.hxcpp" >> $GITHUB_ENV
 
       - name: Rebuild Lime tools
         run: |
@@ -144,10 +141,6 @@ jobs:
           haxelib install format --quiet
           haxelib install hxp --quiet
 
-      - name: Enable HXCPP compile cache
-        run: |
-          echo "HXCPP_COMPILE_CACHE=~/.hxcpp" >> $GITHUB_ENV
-
       - name: Rebuild Lime tools
         run: |
           haxelib dev lime ${{ github.workspace }}
@@ -224,10 +217,6 @@ jobs:
           haxe -C "$(haxelib libpath hxcpp)tools/hxcpp" compile.hxml
           haxelib install format --quiet
           haxelib install hxp --quiet
-
-      - name: Enable HXCPP compile cache
-        run: |
-          echo "HXCPP_COMPILE_CACHE=C:\.hxcpp" >> $Env:GITHUB_ENV
 
       - name: Rebuild Lime tools
         run: |
@@ -323,10 +312,6 @@ jobs:
           haxelib install format --quiet
           haxelib install hxp --quiet
 
-      - name: Enable HXCPP compile cache
-        run: |
-          echo "HXCPP_COMPILE_CACHE=~/.hxcpp" >> $GITHUB_ENV
-
       - name: Prepare Lime
         run: |
           haxelib dev lime ${{ github.workspace }}
@@ -395,10 +380,6 @@ jobs:
           haxelib install format --quiet
           haxelib install hxp --quiet
 
-      - name: Enable HXCPP compile cache
-        run: |
-          echo "HXCPP_COMPILE_CACHE=~/.hxcpp" >> $GITHUB_ENV
-
       - name: Prepare Lime
         run: |
           haxelib dev lime ${{ github.workspace }}
@@ -460,10 +441,6 @@ jobs:
           haxelib install hxp --quiet
           haxelib install svg --quiet
           haxelib install openfl --quiet
-
-      - name: Enable HXCPP compile cache
-        run: |
-          echo "HXCPP_COMPILE_CACHE=~/.hxcpp" >> $GITHUB_ENV
 
       - name: Rebuild Lime tools
         run: |
