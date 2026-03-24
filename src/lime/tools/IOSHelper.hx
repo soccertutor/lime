@@ -136,7 +136,12 @@ class IOSHelper
 			else
 			{
 				commands.push("-arch");
-				commands.push("x86_64");
+				// Apple Silicon: use arm64 simulator
+				var unameOutput = System.runProcess("", "uname", ["-m"]);
+				if (unameOutput != null && StringTools.trim(unameOutput) == "arm64")
+					commands.push("arm64");
+				else
+					commands.push("x86_64");
 			}
 		}
 		else if (project.targetFlags.exists("armv7"))

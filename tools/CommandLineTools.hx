@@ -267,6 +267,7 @@ class CommandLineTools
 						case "iphonesim":
 							target = Platform.IOS;
 							targetFlags.set("simulator", "");
+							userDefines.set("iphonesim", "1");
 
 						case "electron":
 							target = Platform.HTML5;
@@ -1574,6 +1575,7 @@ class CommandLineTools
 			case "iphonesim":
 				target = Platform.IOS;
 				targetFlags.set("simulator", "");
+				userDefines.set("iphonesim", "1");
 
 			case "electron":
 				target = Platform.HTML5;
@@ -1613,6 +1615,7 @@ class CommandLineTools
 		HXProject._environment = environment;
 		HXProject._target = target;
 		HXProject._targetFlags = targetFlags;
+		if (targetFlags.exists("simulator")) userDefines.set("iphonesim", "1");
 		HXProject._userDefines = userDefines;
 
 		var config = ConfigHelper.getConfig();

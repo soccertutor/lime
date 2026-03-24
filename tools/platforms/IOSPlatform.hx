@@ -190,6 +190,9 @@ class IOSPlatform extends PlatformTarget
 
 		project.haxedefs.set("HXCPP_CPP11", "1");
 
+		if (project.targetFlags.exists("simulator"))
+			project.haxedefs.set("simulator", "1");
+
 		if (project.config.getString("ios.compiler") == "llvm" || project.config.getString("ios.compiler", "clang") == "clang")
 		{
 			project.haxedefs.set("HXCPP_CLANG", "1");
@@ -201,6 +204,7 @@ class IOSPlatform extends PlatformTarget
 		context.HAS_ICON = false;
 		context.HAS_LAUNCH_IMAGE = false;
 		context.OBJC_ARC = false;
+		context.IS_SIMULATOR = true;
 		context.KEY_STORE_IDENTITY = project.config.getString("ios.identity");
 
 		if (project.config.exists("ios.provisioning-profile"))
@@ -476,10 +480,12 @@ class IOSPlatform extends PlatformTarget
 		var armv6 = (project.architectures.indexOf(Architecture.ARMV6) > -1 && !project.targetFlags.exists("simulator"));
 		var armv7 = (project.architectures.indexOf(Architecture.ARMV7) > -1 && !project.targetFlags.exists("simulator"));
 		var armv7s = (project.architectures.indexOf(Architecture.ARMV7S) > -1 && !project.targetFlags.exists("simulator"));
+		var isSimulator = project.targetFlags.exists("simulator");
 		var arm64 = (command == "rebuild"
-			|| (project.architectures.indexOf(Architecture.ARM64) > -1 && !project.targetFlags.exists("simulator")));
-		var i386 = (project.architectures.indexOf(Architecture.X86) > -1 && project.targetFlags.exists("simulator"));
-		var x86_64 = (command == "rebuild" || project.targetFlags.exists("simulator"));
+			|| (project.architectures.indexOf(Architecture.ARM64) > -1 && !isSimulator)
+			|| isSimulator);  // ARM64 simulator on Apple Silicon
+		var i386 = (project.architectures.indexOf(Architecture.X86) > -1 && isSimulator);
+		var x86_64 = (command == "rebuild" || (isSimulator && !arm64));
 
 		var arc = (project.targetFlags.exists("arc"));
 
@@ -488,7 +494,8 @@ class IOSPlatform extends PlatformTarget
 		if (armv6) commands.push(["-Dios", "-DHXCPP_CPP11", "-DHXCPP_ARMV6"]);
 		if (armv7) commands.push(["-Dios", "-DHXCPP_CPP11", "-DHXCPP_ARMV7"]);
 		if (armv7s) commands.push(["-Dios", "-DHXCPP_CPP11", "-DHXCPP_ARMV7S"]);
-		if (arm64) commands.push(["-Dios", "-DHXCPP_CPP11", "-DHXCPP_ARM64"]);
+		if (arm64 && !isSimulator) commands.push(["-Dios", "-DHXCPP_CPP11", "-DHXCPP_ARM64"]);
+		if (arm64 && isSimulator) commands.push(["-Dios", "-Dsimulator", "-DHXCPP_CPP11", "-DHXCPP_ARM64"]);
 		if (i386) commands.push(["-Dios", "-Dsimulator", "-DHXCPP_M32", "-DHXCPP_CPP11"]);
 		if (x86_64) commands.push(["-Dios", "-Dsimulator", "-DHXCPP_M64", "-DHXCPP_CPP11"]);
 
@@ -809,6 +816,10 @@ class IOSPlatform extends PlatformTarget
 				".iphonesim-64.a"
 			][archID];
 
+			// ARM64 simulator: use .iphonesim-arm64.a instead of .iphoneos-64.a
+			if (arch == "arm64" && project.targetFlags.exists("simulator"))
+				libExt = ".iphonesim-arm64.a";
+
 			System.mkdir(projectDirectory + "/lib/" + arch);
 			System.mkdir(projectDirectory + "/lib/" + arch + "-debug");
 
@@ -823,8 +834,22 @@ class IOSPlatform extends PlatformTarget
 
 				if (!FileSystem.exists(releaseLib))
 				{
-					releaseLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphoneos.a");
-					debugLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphoneos.a", true);
+					// ARM64 simulator fallback chain: .iphonesim-64.a → .iphonesim.a → .iphoneos.a
+					if (arch == "arm64" && project.targetFlags.exists("simulator"))
+					{
+						releaseLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphonesim-64.a");
+						debugLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphonesim-64.a", true);
+						if (!FileSystem.exists(releaseLib))
+						{
+							releaseLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphonesim.a");
+							debugLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphonesim.a", true);
+						}
+					}
+					if (!FileSystem.exists(releaseLib))
+					{
+						releaseLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphoneos.a");
+						debugLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphoneos.a", true);
+					}
 				}
 
 				System.copyIfNewer(releaseLib, releaseDest);

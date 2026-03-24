@@ -26,7 +26,13 @@ CONFIG := $(CONFIG)-$(HAXE_OS)
 LIB_DEST := $(DEBUG)/libApplicationMain.a
 LIB_MBEDTLS_DEST := $(DEBUG)/libmbedtls_hxcpp.a
 
+::if (IS_SIMULATOR)::
+SIMULATOR_ARCH = i386 x86_64 arm64
+HXCPP_FLAGS_arm64 = -D simulator -D HXCPP_ARM64
+::else::
 SIMULATOR_ARCH = i386 x86_64
+HXCPP_FLAGS_arm64 = -D HXCPP_ARM64
+::end::
 
 SUFFIX_i386 =
 SUFFIX_x86_64 = -64
@@ -38,7 +44,6 @@ HXCPP_FLAGS_i386 = -D simulator
 HXCPP_FLAGS_x86_64 = -D simulator -D HXCPP_M64
 HXCPP_FLAGS_armv6 = -D HXCPP_ARMV6
 HXCPP_FLAGS_armv7 = -D HXCPP_ARMV7
-HXCPP_FLAGS_arm64 = -D HXCPP_ARM64
 
 ifeq ("$(ACTION)","clean")
 default: clean

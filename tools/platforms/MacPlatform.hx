@@ -339,6 +339,10 @@ class MacPlatform extends PlatformTarget
 
 				CPPHelper.compile(project, targetDirectory + "/obj", flags);
 
+				// Remove old binary before copy to force a new inode. macOS caches
+				// code signatures per vnode — overwriting in-place leaves a stale
+				// cdhash that causes SIGKILL on Apple Silicon (FB8914243).
+				System.deleteFile(executablePath);
 				System.copyFile(targetDirectory + "/obj/ApplicationMain" + (project.debug ? "-debug" : ""), executablePath);
 			}
 			else
@@ -350,6 +354,7 @@ class MacPlatform extends PlatformTarget
 				CPPHelper.compile(project, targetDirectory + "/obj", flags.concat(["-Dstatic_link"]));
 				CPPHelper.compile(project, targetDirectory + "/obj", flags, "BuildMain.xml");
 
+				System.deleteFile(executablePath);
 				System.copyFile(targetDirectory + "/obj/Main" + (project.debug ? "-debug" : ""), executablePath);
 			}
 		}
