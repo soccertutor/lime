@@ -370,28 +370,15 @@
 				GCC_PREFIX_HEADER = "::APP_FILE::/::APP_FILE::-Prefix.pch";
 				INFOPLIST_FILE = "::APP_FILE::/::APP_FILE::-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = ::DEPLOYMENT::;
-				"LIBRARY_SEARCH_PATHS[arch=arm64]" = (
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = (
 					"$(inherited)",
 					"\"$(SRCROOT)/::APP_FILE::/lib/arm64-debug\"",
 					"\"$(SRCROOT)/::APP_FILE::/lib/arm64\"",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=armv6]" = (
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/::APP_FILE::/lib/armv6-debug\"",
-					"\"$(SRCROOT)/::APP_FILE::/lib/armv6\"",
-				);
-				"LIBRARY_SEARCH_PATHS[arch=armv7]" = (
-					"$(inherited)",
-					"\"$(SRCROOT)/::APP_FILE::/lib/armv7-debug\"",
-					"\"$(SRCROOT)/::APP_FILE::/lib/armv7\"",
-				);
-				"LIBRARY_SEARCH_PATHS[arch=i386]" = (
-					"$(inherited)",
-					"\"$(SRCROOT)/::APP_FILE::/lib/i386-debug\"",
-					"\"$(SRCROOT)/::APP_FILE::/lib/i386\"",
-				);
-				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = (
-					"$(inherited)",
+					"\"$(SRCROOT)/::APP_FILE::/lib/arm64-sim-debug\"",
+					"\"$(SRCROOT)/::APP_FILE::/lib/arm64-sim\"",
 					"\"$(SRCROOT)/::APP_FILE::/lib/x86_64-debug\"",
 					"\"$(SRCROOT)/::APP_FILE::/lib/x86_64\"",
 				);
@@ -428,24 +415,13 @@
 				GCC_PREFIX_HEADER = "::APP_FILE::/::APP_FILE::-Prefix.pch";
 				INFOPLIST_FILE = "::APP_FILE::/::APP_FILE::-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = ::DEPLOYMENT::;
-				"LIBRARY_SEARCH_PATHS[arch=arm64]" = (
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = (
 					"$(inherited)",
 					"\"$(SRCROOT)/::APP_FILE::/lib/arm64\"",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=armv6]" = (
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/::APP_FILE::/lib/armv6\"",
-				);
-				"LIBRARY_SEARCH_PATHS[arch=armv7]" = (
-					"$(inherited)",
-					"\"$(SRCROOT)/::APP_FILE::/lib/armv7\"",
-				);
-				"LIBRARY_SEARCH_PATHS[arch=i386]" = (
-					"$(inherited)",
-					"\"$(SRCROOT)/::APP_FILE::/lib/i386\"",
-				);
-				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = (
-					"$(inherited)",
+					"\"$(SRCROOT)/::APP_FILE::/lib/arm64-sim\"",
 					"\"$(SRCROOT)/::APP_FILE::/lib/x86_64\"",
 				);
 				OTHER_LDFLAGS = (

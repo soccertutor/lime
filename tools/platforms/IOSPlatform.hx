@@ -204,7 +204,7 @@ class IOSPlatform extends PlatformTarget
 		context.HAS_ICON = false;
 		context.HAS_LAUNCH_IMAGE = false;
 		context.OBJC_ARC = false;
-		context.IS_SIMULATOR = true;
+		context.IS_SIMULATOR = project.targetFlags.exists("simulator");
 		context.KEY_STORE_IDENTITY = project.config.getString("ios.identity");
 
 		if (project.config.exists("ios.provisioning-profile"))
@@ -820,8 +820,11 @@ class IOSPlatform extends PlatformTarget
 			if (arch == "arm64" && project.targetFlags.exists("simulator"))
 				libExt = ".iphonesim-arm64.a";
 
-			System.mkdir(projectDirectory + "/lib/" + arch);
-			System.mkdir(projectDirectory + "/lib/" + arch + "-debug");
+			// ARM64 simulator uses separate directory to avoid overwriting device libs
+			var destArch = (arch == "arm64" && project.targetFlags.exists("simulator")) ? "arm64-sim" : arch;
+
+			System.mkdir(projectDirectory + "/lib/" + destArch);
+			System.mkdir(projectDirectory + "/lib/" + destArch + "-debug");
 
 			for (ndll in project.ndlls)
 			{
@@ -829,8 +832,8 @@ class IOSPlatform extends PlatformTarget
 
 				var releaseLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", libExt);
 				var debugLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", libExt, true);
-				var releaseDest = projectDirectory + "/lib/" + arch + "/lib" + ndll.name + ".a";
-				var debugDest = projectDirectory + "/lib/" + arch + "-debug/lib" + ndll.name + ".a";
+				var releaseDest = projectDirectory + "/lib/" + destArch + "/lib" + ndll.name + ".a";
+				var debugDest = projectDirectory + "/lib/" + destArch + "-debug/lib" + ndll.name + ".a";
 
 				if (!FileSystem.exists(releaseLib))
 				{
@@ -877,7 +880,7 @@ class IOSPlatform extends PlatformTarget
 						fileName = "lib" + fileName;
 					}
 
-					copyIfNewer(dependency.path, projectDirectory + "/lib/" + arch + "/" + fileName);
+					copyIfNewer(dependency.path, projectDirectory + "/lib/" + destArch + "/" + fileName);
 				}
 			}
 		}
