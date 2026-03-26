@@ -133,15 +133,15 @@ class IOSHelper
 				commands.push("-arch");
 				commands.push("i386");
 			}
+			else if (System.hostArchitecture == ARM64)
+			{
+				commands.push("-arch");
+				commands.push("arm64");
+			}
 			else
 			{
 				commands.push("-arch");
-				// Apple Silicon: use arm64 simulator
-				var unameOutput = System.runProcess("", "uname", ["-m"]);
-				if (unameOutput != null && StringTools.trim(unameOutput) == "arm64")
-					commands.push("arm64");
-				else
-					commands.push("x86_64");
+				commands.push("x86_64");
 			}
 		}
 		else if (project.targetFlags.exists("armv7"))
