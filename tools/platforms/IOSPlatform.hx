@@ -837,16 +837,14 @@ class IOSPlatform extends PlatformTarget
 
 				if (!FileSystem.exists(releaseLib))
 				{
-					// ARM64 simulator fallback chain: .iphonesim-64.a → .iphonesim.a → .iphoneos.a
+					// ARM64 simulator has no safe fallback: .iphonesim-64.a is x86_64 and
+					// .iphonesim.a is legacy i386/armv7 — copying either into lib/arm64-sim/
+					// produces a confusing "found architecture 'x86_64', required architecture 'arm64'"
+					// linker error. Fail fast with an actionable message instead.
 					if (arch == "arm64" && project.targetFlags.exists("simulator"))
 					{
-						releaseLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphonesim-64.a");
-						debugLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphonesim-64.a", true);
-						if (!FileSystem.exists(releaseLib))
-						{
-							releaseLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphonesim.a");
-							debugLib = NDLL.getLibraryPath(ndll, "iPhone", "lib", ".iphonesim.a", true);
-						}
+						Log.error("NDLL \"" + ndll.name + "\" is missing an ARM64 simulator build ("
+							+ releaseLib + "). Rebuild the extension with -DHXCPP_ARM64 -Diphonesim.");
 					}
 					if (!FileSystem.exists(releaseLib))
 					{
